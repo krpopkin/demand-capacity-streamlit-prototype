@@ -1,0 +1,6 @@
+#this is to run locally
+[server]
+headless = true
+browser.gatherUsageStats = false
+port = 8501
+browser.autoOpen = true

@@ -1,0 +1,25 @@
+https://demand-capacity-app-223619550913.us-central1.run.app/
+
+ http://localhost:8501
+
+ https://www.whatismyip.com/  after I get the IP address go to 
+ this link and modify the network to that address: (make sure to add /32 after the IP address)
+ https://console.cloud.google.com/sql/instances/demand-capacity/connections/networking?project=amw-dna-coe-working-ds-dev
+
+1. To run Streamlit in the background:  streamlit run app.py &
+
+2. To kill Streamlit: 
+ps aux | grep streamlit
+kill PID
+
+3. To get to my demand-capacity virtual env:
+cd ~/demand_capacity_app
+source .venv/Scripts/activate
+
+4. gcloud config set project amw-dna-coe-working-ds-dev
+
+5. https://whatismyipaddress.com/
+gcloud sql instances patch demand-capacity \
+  --authorized-networks=68.32.17.69
+
+6. gcloud sql instances restart demand-capacity  #restart the database 
