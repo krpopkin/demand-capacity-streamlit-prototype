@@ -13,18 +13,9 @@ def show(engine):
         st.warning("No database connection.")
         return
 
-    tab1, tab2, tab3, tab4 = st.tabs(["Products", "Roles", "Team Members", "Skills Matrix"])
+    tab1, tab2, tab3 = st.tabs(["Roles", "Team Members", "Skills Matrix"])
 
     with tab1:
-        with engine.connect() as conn:
-            render_tab_with_grid(
-                "Products",
-                "products",
-                ["name", "manager", "technology_executive"],
-                conn
-            )
-
-    with tab2:
         with engine.connect() as conn:
             render_tab_with_grid(
                 "Roles",
@@ -33,7 +24,7 @@ def show(engine):
                 conn,
             )
 
-    with tab3:
+    with tab2:
         with engine.connect() as conn:
             render_tab_with_grid(
                 "Team Members",
@@ -42,6 +33,6 @@ def show(engine):
                 conn,
             )
             
-    with tab4:
+    with tab3:
         with engine.connect() as conn:
             render_skills_matrix_grid(conn)

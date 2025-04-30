@@ -1,5 +1,5 @@
 import streamlit as st
-from shared_grid import render_assignments_grid
+from shared_grid import render_tab_with_grid, render_assignments_grid
 
 def show(engine):
     st.title("📝 Demand")
@@ -9,7 +9,18 @@ def show(engine):
     if engine is None:
         st.warning("No database connection.")
         return
+    
+    tab1, tab2 = st.tabs(["Products", "Assignments"])
 
-    # Establish connection from engine
-    with engine.connect() as conn:
-        render_assignments_grid(conn)
+    with tab1:
+        with engine.connect() as conn:
+            render_tab_with_grid(
+                "Products",
+                "products",
+                ["name", "manager", "technology_executive"],
+                conn
+            )
+            
+    with tab2:
+        with engine.connect() as conn:
+            render_assignments_grid(conn)

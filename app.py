@@ -1,7 +1,7 @@
 import streamlit as st
 import demand
 import reports
-import admin
+import capacity
 import history_log
 from db import get_engine
 
@@ -19,14 +19,14 @@ except Exception as e:
     st.sidebar.error(f"❌ DB Connection failed: {e}")
 
 # Page Navigation
-page = st.sidebar.radio("Go to", ["Reports", "Demand", "Admin", "History Log"])
+page = st.sidebar.radio("Go to", ["Reports", "Demand", "Capacity", "History Log"])
 
 # Pass engine to all modules
 if page == "Reports":
     reports.show(engine)
 elif page == "Demand":
     demand.show(engine)
-elif page == "Admin":
-    admin.show(engine)
+elif page == "Capacity":
+    capacity.show(engine)
 elif page == "History Log":
     history_log.show(engine)
