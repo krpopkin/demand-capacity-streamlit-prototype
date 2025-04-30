@@ -225,7 +225,7 @@ def render_skills_matrix_grid(conn):
             [df, pd.DataFrame([new])],
             ignore_index=True
         )
-        st.session_state[reload_key] += 1
+        # st.session_state[reload_key] += 1
         st.rerun()
 
     # ─── build AgGrid options ─────────────────────────────────────────
@@ -422,7 +422,7 @@ def render_assignments_grid(conn):
         new_row = {"id": None, "role": "", "team_member": "", "allocation": 0.25, "inactivate": False}
         df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
         st.session_state[data_key] = df
-        st.session_state[reload_key] += 1
+        #st.session_state[reload_key] += 1
         st.rerun()
 
     # ─── configure AgGrid ────────────────────────────────────────────
