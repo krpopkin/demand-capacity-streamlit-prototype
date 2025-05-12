@@ -4,7 +4,7 @@ from shared_grid import (
 )
 
 def show(engine):
-    st.title("📊 Admin")
+    st.title("📊 Capacity")
     st.markdown("Across the tabs below you can add, rename, and deactivate, Products, Roles, and \
         Team Members.  In the Skills Matrix you can designate if a team member is qualified, \
         building, or underperforming in each role you give them.")

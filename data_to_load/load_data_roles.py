@@ -20,7 +20,7 @@ else:
     conn_str = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 # --- CSV path ---
-csv_path = r"C:\Users\krpop\Documents\KenP\Applications-Python\demand_capacity_app\data_to_load\unit_test_data\unit_test_roles.csv"
+csv_path = r"C:\Users\krpop\Documents\KenP\Applications-Python\demand_capacity_app\data_to_load\roles.csv"
 
 # --- Load CSV ---
 df = pd.read_csv(csv_path)

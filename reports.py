@@ -3,7 +3,7 @@ from report_demand import demand_report
 from report_capacity import capacity_report
 
 def show(engine):
-    st.title("Reports")
+    st.title("📒Reports")
     st.markdown('For the Demand and Capacity reports you can hover over the Notes field to see the \
                 truncated text.  The Capacity reports cell color is green if the team member is "qualified", \
                 yellow if the team member is "building", and red if the team member is "underperforming" \

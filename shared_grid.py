@@ -44,7 +44,7 @@ def render_tab_with_grid(
             SELECT {cols_sql}
               FROM {table_name}
              WHERE is_active = TRUE
-          ORDER BY id
+          ORDER BY name
         """
         rows = conn.execute(text(sql)).fetchall()
         df   = pd.DataFrame(rows, columns=["id"] + editable_fields)
@@ -149,7 +149,7 @@ def render_tab_with_grid(
 def render_skills_matrix_grid(conn):
     """
     Displays:
-      1) A selectbox to choose a Team Member
+      1) A selectbox to choose a Team Member (sorted by full name, i.e. effectively by first name)
       2) An AgGrid showing active rows’ id, roles, skill levels, and an “❌ Inactivate” checkbox
       3) A single “Save Skills Matrix” button to INSERT new rows, UPDATE existing rows, or SOFT-INACTIVATE rows
       4) Logs history on each change via log_history()
@@ -162,19 +162,27 @@ def render_skills_matrix_grid(conn):
     if reload_key not in st.session_state:
         st.session_state[reload_key] = 0
 
-    # ─── lookup maps ─────────────────────────────────────────────────
-    team_map = dict(conn.execute(text(
-        "SELECT name, id FROM teammembers WHERE is_active = TRUE"
-    )).fetchall())
-    role_map = dict(conn.execute(text(
-        "SELECT name, id FROM roles WHERE is_active = TRUE"
-    )).fetchall())
-    team_names = sorted(team_map.keys())
+    # ─── lookup maps ───────────────────────────────────────────────────
+    # let Postgres ORDER BY the full name string
+    team_rows = conn.execute(text(
+        "SELECT name, id FROM teammembers WHERE is_active = TRUE ORDER BY name"
+    )).fetchall()
+    team_map   = {name: tid for name, tid in team_rows}
+    team_names = [name for name, _ in team_rows]
+
+    role_rows = conn.execute(text(
+        "SELECT name, id FROM roles WHERE is_active = TRUE ORDER BY name"
+    )).fetchall()
+    role_map  = {name: rid for name, rid in role_rows}
 
     # ─── layout: selector, add, save ─────────────────────────────────
     col1, col2, col3 = st.columns([2.25, 1.75, 2])
     with col1:
-        selected_member = st.selectbox("tm", team_names, label_visibility="collapsed")
+        selected_member = st.selectbox(
+            "Select Team Member",
+            team_names,
+            label_visibility="collapsed"
+        )
         prev = st.session_state.get("prev_selected_skills_member")
         if prev and prev != selected_member:
             st.session_state.pop(data_key, None)
@@ -204,7 +212,7 @@ def render_skills_matrix_grid(conn):
            AND sm.is_active = TRUE
          ORDER BY sm.id
     """
-    rows   = conn.execute(text(sql), {"tmid": team_map[selected_member]}).fetchall()
+    rows    = conn.execute(text(sql), {"tmid": team_map[selected_member]}).fetchall()
     base_df = pd.DataFrame(rows, columns=["id", "role", "skill_level"])
     base_df["inactivate"] = False
 
@@ -215,17 +223,12 @@ def render_skills_matrix_grid(conn):
         st.session_state[data_key]        = base_df.copy()
         st.session_state[last_reload_key] = now
 
-    # ─── work off the cached DataFrame ───────────────────────────────
     df = st.session_state[data_key].reset_index(drop=True)
 
     # ─── add-row logic ───────────────────────────────────────────────
     if add_clicked:
         new = {"id": None, "role": "", "skill_level": "", "inactivate": False}
-        st.session_state[data_key] = pd.concat(
-            [df, pd.DataFrame([new])],
-            ignore_index=True
-        )
-        # st.session_state[reload_key] += 1
+        st.session_state[data_key] = pd.concat([df, pd.DataFrame([new])], ignore_index=True)
         st.rerun()
 
     # ─── build AgGrid options ─────────────────────────────────────────
@@ -236,7 +239,7 @@ def render_skills_matrix_grid(conn):
         editable=True,
         width=300,
         cellEditor="agSelectCellEditor",
-        cellEditorParams={"values": sorted(role_map.keys())}
+        cellEditorParams={"values": sorted(role_map.keys(), key=str.lower)}
     )
     gb.configure_column(
         "skill_level",
@@ -264,7 +267,7 @@ def render_skills_matrix_grid(conn):
     # ─── save logic ────────────────────────────────────────────────────
     if save_clicked:
         try:
-            # 1) Soft-inactivate flagged existing rows
+            # 1) Soft-inactivate existing rows
             to_inactivate = updated[(updated["inactivate"]) & (updated["id"].notnull())]
             for _, row in to_inactivate.iterrows():
                 conn.execute(
@@ -274,48 +277,51 @@ def render_skills_matrix_grid(conn):
                 log_history(conn, "skills_matrix", "INACTIVATE", old_data={"id": row["id"]})
 
             # 2) Insert new rows
-            to_insert = updated[(~updated["inactivate"]) & (updated["id"].isnull())]
+            to_insert = updated[
+                (~updated["inactivate"]) &
+                (updated["id"].isnull()) &
+                (updated["role"].str.strip() != "") &
+                (updated["skill_level"].str.strip() != "")
+            ]
             for _, row in to_insert.iterrows():
                 new_id = conn.execute(
-                    text("""INSERT INTO skills_matrix
-                              (teammember_id, role_id, skill_level, is_active)
-                            VALUES
-                              (:tmid, :rid, :sl, TRUE)
-                          RETURNING id"""),
+                    text("""
+                        INSERT INTO skills_matrix
+                          (teammember_id, role_id, skill_level, is_active)
+                        VALUES
+                          (:tmid, :rid, :sl, TRUE)
+                        RETURNING id
+                    """),
                     {
                         "tmid": team_map[selected_member],
                         "rid":  role_map[row["role"]],
                         "sl":   row["skill_level"]
                     }
                 ).scalar_one()
-                log_history(
-                    conn, "skills_matrix", "INSERT",
-                    new_data={**row.to_dict(), "id": new_id}
-                )
+                log_history(conn, "skills_matrix", "INSERT", new_data={**row.to_dict(), "id": new_id})
 
             # 3) Update existing rows
             to_update = updated[(~updated["inactivate"]) & (updated["id"].notnull())]
             for _, row in to_update.iterrows():
                 conn.execute(
-                    text("""UPDATE skills_matrix
-                              SET role_id     = :rid,
-                                  skill_level = :sl,
-                                  is_active   = TRUE
-                            WHERE id = :id"""),
+                    text("""
+                        UPDATE skills_matrix
+                           SET role_id     = :rid,
+                               skill_level = :sl,
+                               is_active   = TRUE
+                         WHERE id = :id
+                    """),
                     {
                         "rid": role_map[row["role"]],
                         "sl":  row["skill_level"],
                         "id":  row["id"]
                     }
                 )
-                log_history(
-                    conn, "skills_matrix", "UPDATE",
-                    new_data=row.to_dict()
-                )
+                log_history(conn, "skills_matrix", "UPDATE", new_data=row.to_dict())
 
             conn.commit()
             st.session_state.pop(data_key, None)
-            st.session_state[reload_key] += 1
+            st.session_state[reload_key]  += 1
             st.success("✅ Skills matrix saved successfully.")
             st.rerun()
 
@@ -324,12 +330,19 @@ def render_skills_matrix_grid(conn):
             st.error(f"❌ Failed to save skills matrix: {e}")
 
 
+
 # ---- ASSIGNMENTS TAB ----
 #########################################
+from collections import defaultdict
+import pandas as pd
+import streamlit as st
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode, GridUpdateMode, DataReturnMode
+from sqlalchemy import text
+
 def render_assignments_grid(conn):
     """
     Displays:
-      1) A selectbox to choose a Product
+      1) A selectbox to choose a Product (sorted by name)
       2) An AgGrid showing active rows’ id, roles, team members, allocation, and an ❌ Inactivate checkbox
       3) A single Save button to INSERT new rows, UPDATE existing rows, or SOFT-INACTIVATE rows
       4) Logs history on each change via log_history()
@@ -343,9 +356,13 @@ def render_assignments_grid(conn):
         st.session_state[reload_key] = 0
 
     # ─── lookup maps ──────────────────────────────────────────────────
-    product_map = dict(conn.execute(text(
-        "SELECT name, id FROM products WHERE is_active = TRUE"
-    )).fetchall())
+    # Fetch products ordered by name
+    product_rows  = conn.execute(text(
+        "SELECT name, id FROM products WHERE is_active = TRUE ORDER BY name"
+    )).fetchall()
+    product_map   = {name: pid for name, pid in product_rows}
+    product_names = [name for name, _ in product_rows]
+
     role_map = dict(conn.execute(text(
         "SELECT name, id FROM roles WHERE is_active = TRUE"
     )).fetchall())
@@ -371,7 +388,7 @@ def render_assignments_grid(conn):
     with col1:
         selected_product = st.selectbox(
             "Select product",
-            sorted(product_map.keys()),
+            product_names,
             label_visibility="collapsed"
         )
         prev = st.session_state.get("previous_selected_product")
@@ -422,7 +439,6 @@ def render_assignments_grid(conn):
         new_row = {"id": None, "role": "", "team_member": "", "allocation": 0.25, "inactivate": False}
         df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
         st.session_state[data_key] = df
-        #st.session_state[reload_key] += 1
         st.rerun()
 
     # ─── configure AgGrid ────────────────────────────────────────────
@@ -434,21 +450,25 @@ def render_assignments_grid(conn):
         cellEditor="agSelectCellEditor",
         cellEditorParams={"values": sorted(role_map.keys())}
     )
-    js_code = JsCode(f"""
+
+    selector = JsCode(f"""
     function(params) {{
       const skillMap = {json.dumps(skill_map)};
       const allTMs   = {json.dumps(sorted(team_map.keys()))};
       const role     = params.data.role;
-      if (!role) return allTMs;
-      return skillMap[role] || [];
+      const values   = role ? (skillMap[role] || []) : allTMs;
+      return {{
+        component: 'agSelectCellEditor',
+        params: {{ values: values }}
+      }};
     }}
     """)
     gb.configure_column(
         "team_member",
         editable=True,
-        cellEditor="agRichSelectCellEditor",
-        cellEditorParams={"values": js_code}
+        cellEditorSelector=selector
     )
+
     gb.configure_column("allocation", editable=True)
     gb.configure_column("inactivate", header_name="❌ Inactivate", editable=True, checkbox=True)
     gb.configure_grid_options(
@@ -484,7 +504,14 @@ def render_assignments_grid(conn):
                 log_history(conn, "assignments", "INACTIVATE", old_data={"id": row["id"]})
 
             # 2) insert new rows
-            to_insert = updated[(~updated["inactivate"]) & (updated["id"].isnull())]
+            #to_insert = updated[(~updated["inactivate"]) & (updated["id"].isnull())]
+            to_insert = updated[
+                (~updated["inactivate"]) &
+                (updated["id"].isnull()) &
+                (updated["role"].str.strip() != "") &
+                (updated["team_member"].str.strip() != "")
+            ]
+            
             for _, row in to_insert.iterrows():
                 new_id = conn.execute(
                     text("""
