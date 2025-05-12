@@ -48,3 +48,147 @@ Install Python dependencies:
 
 ```bash
 pip install -r requirements.txt
+```
+
+Contents of `requirements.txt`:
+
+```
+streamlit
+pandas
+sqlalchemy
+psycopg2-binary
+streamlit-aggrid
+xlsxwriter
+```
+
+---
+
+## Installation & Setup
+
+1. **Clone the repo**  
+   ```bash
+   git clone https://github.com/<your-org>/dc.git
+   cd dc
+   ```
+
+2. **Install dependencies**  
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Configure your database credentials**  
+   - Edit `db.py` and replace the dummy values with your actual `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME`.  
+   - **Do not commit real credentials!**
+
+4. **Run locally**  
+   ```bash
+   streamlit run app.py
+   ```
+
+---
+
+## Configuration
+
+All connection/config settings live in **db.py**. It contains placeholders—reach out to Ken Popkin for the real values.
+
+```python
+DB_HOST = "your-db-host"
+DB_PORT = "5432"
+DB_USER = "your-db-user"
+DB_PASSWORD = "your-db-password"
+DB_NAME = "your-db-name"
+```
+
+---
+
+## Usage
+
+- **Locally:** open `http://localhost:8501`  
+- **Deployed:** use the Cloud Run URL (contact Ken Popkin for the link)
+
+---
+
+## Database Schema
+
+### `assignments`
+| column_name    | data_type                   |
+|----------------|-----------------------------|
+| id             | integer                     |
+| product_id     | integer                     |
+| role_id        | integer                     |
+| teammember_id  | integer                     |
+| allocation     | numeric                     |
+| is_active      | boolean                     |
+| created_at     | timestamp without time zone |
+
+### `skills_matrix`
+| column_name     | data_type                   |
+|-----------------|-----------------------------|
+| id              | integer                     |
+| teammembers_id  | integer                     |
+| role_id         | integer                     |
+| created_at      | timestamp without time zone |
+| skill_level     | text                        |
+
+### `products`
+| column_name           | data_type                   |
+|-----------------------|-----------------------------|
+| id                    | integer                     |
+| created_at            | timestamp without time zone |
+| name                  | text                        |
+| manager               | text                        |
+| technology_executive  | text                        |
+
+### `roles`
+| column_name    | data_type                   |
+|----------------|-----------------------------|
+| id             | integer                     |
+| created_at     | timestamp without time zone |
+| name           | text                        |
+| description    | text                        |
+
+### `team_members`
+| column_name    | data_type                   |
+|----------------|-----------------------------|
+| id             | integer                     |
+| created_at     | timestamp without time zone |
+| name           | text                        |
+| manager        | text                        |
+| level          | text                        |
+
+---
+
+## Deployment
+
+A simple shell script handles build & deploy:
+
+```bash
+./deploy.sh
+```
+
+This builds the Docker image and deploys to GCP Cloud Run under your project.
+
+---
+
+## Bulk-Load Routines
+
+Optional CSV bulk-load scripts live in the `data_to_load/` folder for:
+
+- Products  
+- Roles  
+- Team Members  
+
+Run them as needed to seed your database.
+
+---
+
+## Tests
+
+*No automated tests are currently provided.*
+
+---
+
+## License & Contributing
+
+*No license specified.*  
+*No CONTRIBUTING guidelines defined.*
