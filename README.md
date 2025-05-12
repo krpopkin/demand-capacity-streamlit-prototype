@@ -172,7 +172,7 @@ This builds the Docker image and deploys to GCP Cloud Run under your project.
 
 ## Bulk-Load Routines
 
-Optional CSV bulk-load scripts live in the `data_to_load/` folder for:
+CSV bulk-load scripts live in the `data_to_load/` folder for:
 
 - Products  
 - Roles  
