@@ -9,7 +9,7 @@ set -euo pipefail
 gcloud config set project amw-dna-coe-working-ds-dev
 
 # --- Step 2: Change directory to where your Dockerfile is ---
-cd "/c/Users/krpop/Documents/KenP/Applications-Python/demand_capacity_app"
+cd "/c/Users/krpop/Documents/KenP/Applications-Python/demand-capacity2"
 
 # --- Step 3: Build Docker image ---
 docker build -t us-central1-docker.pkg.dev/amw-dna-coe-working-ds-dev/demand-capacity-repo/demand-capacity-app .

@@ -19,7 +19,7 @@ except Exception as e:
     st.sidebar.error(f"❌ DB Connection failed: {e}")
 
 # Page Navigation
-page = st.sidebar.radio("Go to", ["Reports", "Demand", "Capacity", "History Log"])
+page = st.sidebar.radio("Go to", ["Reports", "Demand", "Capacity"])
 
 # Pass engine to all modules
 if page == "Reports":
@@ -28,5 +28,5 @@ elif page == "Demand":
     demand.show(engine)
 elif page == "Capacity":
     capacity.show(engine)
-elif page == "History Log":
-    history_log.show(engine)
+# elif page == "History Log":
+#     history_log.show(engine)

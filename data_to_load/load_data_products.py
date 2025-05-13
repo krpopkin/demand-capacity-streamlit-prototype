@@ -1,33 +1,14 @@
 import pandas as pd
 from sqlalchemy import create_engine, text
 import os
+from db import get_engine
 
-# --- Database credentials ---
-DB_USER = "postgres"
-DB_PASS = "Wn8%21pL4%23tVx%403zQe"
-DB_NAME = "demand_capacity"
+# --- Path to excel file and create dataframe ---
+excel_path = r"C:\Users\krpop\Documents\KenP\Applications-Python\demand-capacity2\data_to_load\products.xlsx"
+df = pd.read_excel(excel_path, sheet_name=0)
 
-def is_cloud_run():
-    return "K_SERVICE" in os.environ
-
-# --- Build connection string based on environment ---
-if is_cloud_run():
-    DB_HOST = "/cloudsql/amw-dna-coe-working-ds-dev:us-central1:demand-capacity"
-    conn_str = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@/{DB_NAME}?host={DB_HOST}"
-else:
-    DB_HOST = "130.211.120.38"
-    DB_PORT = "5432"
-    conn_str = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-
-# --- Path to your CSV file ---
-csv_path = r"C:\Users\krpop\Documents\KenP\Applications-Python\demand_capacity_app\data_to_load\products.csv"
-
-# --- Load CSV ---
-df = pd.read_csv(csv_path)
-df = df[["name", "manager", "technology_executive"]]
-
-# --- Create SQLAlchemy engine ---
-engine = create_engine(conn_str)
+# --- Connect to DB ---
+engine = get_engine()
 
 # --- Define insert statement explicitly ---
 insert_sql = text("""

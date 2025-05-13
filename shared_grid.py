@@ -246,7 +246,8 @@ def render_skills_matrix_grid(conn):
         width=300,
         editable=True,
         cellEditor="agSelectCellEditor",
-        cellEditorParams={"values": ["qualified", "building", "under performing"]}
+        #cellEditorParams={"values": ["qualified", "building", "under performing"]}
+        cellEditorParams={"values": ["expert", "intermediate", "beginner"]}
     )
     gb.configure_column("inactivate", header_name="❌ Inactivate", editable=True, checkbox=True)
     gb.configure_default_column(editable=True)
