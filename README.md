@@ -12,6 +12,7 @@ A lightweight, portfolio-level resource management tool built with Streamlit and
 - [Configuration](#configuration)  
 - [Usage](#usage)  
 - [Database Schema](#database-schema)  
+- [Soft-Delete & Auto-Inactivation Rules](#soft-delete--auto-inactivation-rules)  
 - [Deployment](#deployment)  
 - [Bulk-Load Routines](#bulk-load-routines)  
 - [Tests](#tests)  
@@ -155,6 +156,21 @@ DB_NAME = "your-db-name"
 | name           | text                        |
 | manager        | text                        |
 | level          | text                        |
+
+---
+
+## 🛡️ Soft-Delete & Auto-Inactivation Rules
+
+We never hard-delete rows—instead we mark them inactive (`is_active = FALSE`) and automatically propagate that inactivation to dependent records:
+
+1. **Teammember Inactivation**  
+   When a **teammember** is set to inactive, all of their related rows in both the `assignments` and `skills_matrix` tables are also marked inactive.
+
+2. **Role Inactivation**  
+   When a **role** is set to inactive, any entries in `skills_matrix` for that role—and any rows in `assignments` where that role was assigned—are marked inactive.
+
+3. **Product Removal**  
+   When a **product** is deleted (or inactivated), all `assignments` referencing that product are marked inactive.
 
 ---
 
