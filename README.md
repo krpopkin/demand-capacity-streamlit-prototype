@@ -12,7 +12,7 @@ A lightweight, portfolio-level resource management tool built with Streamlit and
 - [Configuration](#configuration)  
 - [Usage](#usage)  
 - [Database Schema](#database-schema)  
-- [Soft-Delete & Auto-Inactivation Rules](#soft-delete-auto-inactivation-rules)
+- [Soft Delete Rules](#soft-delete-rules)  
 - [Deployment](#deployment)  
 - [Bulk-Load Routines](#bulk-load-routines)  
 - [Tests](#tests)  
@@ -159,7 +159,7 @@ DB_NAME = "your-db-name"
 
 ---
 
-## 🛡️ Soft-Delete & Auto-Inactivation Rules
+## Soft Delete Rules
 
 We never hard-delete rows—instead we mark them inactive (`is_active = FALSE`) and automatically propagate that inactivation to dependent records:
 
@@ -207,4 +207,4 @@ Run them as needed to seed your database.
 ## License & Contributing
 
 *No license specified.*  
-*No CONTRIBUTING guidelines defined.*
+*No CONTRIBUTING guidelines defined.*  
