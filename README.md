@@ -12,7 +12,7 @@ A lightweight, portfolio-level resource management tool built with Streamlit and
 - [Configuration](#configuration)  
 - [Usage](#usage)  
 - [Database Schema](#database-schema)  
-- [Soft-Delete & Auto-Inactivation Rules](#soft-delete--auto-inactivation-rules)  
+- [Soft-Delete & Auto-Inactivation Rules](#soft-delete-activation)  
 - [Deployment](#deployment)  
 - [Bulk-Load Routines](#bulk-load-routines)  
 - [Tests](#tests)  
