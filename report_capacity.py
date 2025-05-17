@@ -69,6 +69,7 @@ def capacity_report(conn):
         pivot
         .reindex(columns=all_roles, fill_value=0)
         .reset_index()
+        .sort_values('team_member')
         .rename(columns={
             "manager":     "Manager",
             "team_member": "Team Member",
@@ -84,7 +85,8 @@ def capacity_report(conn):
         aggfunc="first",
         fill_value=None
     ).reindex(columns=all_roles)
-    skill_pivot = skill_pivot.reset_index().rename(columns={
+    
+    skill_pivot = skill_pivot.sort_values('team_member').reset_index().rename(columns={
         "manager":     "Manager",
         "team_member": "Team Member",
         "level":       "Level"
@@ -144,7 +146,7 @@ def capacity_report(conn):
 
     # 11) Build AgGrid options
     gb = GridOptionsBuilder.from_dataframe(report)
-    gb.configure_default_column(resizable=True, sortable=True, width=95, minWidth=95)
+    gb.configure_default_column(resizable=True, filter=True, sortable=True, width=95, minWidth=95)
 
     # pin Team Member and Rem Cap
     gb.configure_column("Team Member", pinned="left", width=120, minWidth=120)

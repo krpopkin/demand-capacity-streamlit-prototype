@@ -62,6 +62,7 @@ def demand_report(conn):
         pivot
         .reindex(columns=all_roles, fill_value=0)
         .reset_index()
+        .sort_values('product')
         .rename(columns={"manager":"Manager","product":"Product"})
     )
 
@@ -97,6 +98,7 @@ def demand_report(conn):
     gb.configure_default_column(
         resizable=True,
         sortable=True,
+        filter=True,
         width=95,
         minWidth=95
     )
