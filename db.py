@@ -11,9 +11,13 @@ def get_engine():
     if _engine is not None:
         return _engine
 
-    DB_USER = ""
-    DB_PASS = ""
-    DB_NAME = ""
+    # DB_USER = ""
+    # DB_PASS = ""
+    # DB_NAME = ""
+    
+    DB_USER = "postgres"
+    DB_PASS = "Wn8%21pL4%23tVx%403zQe"
+    DB_NAME = "demand_capacity"
 
     if is_cloud_run():
         DB_HOST = "/cloudsql/amw-dna-coe-working-ds-dev:us-central1:demand-capacity"
