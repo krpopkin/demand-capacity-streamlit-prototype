@@ -24,7 +24,8 @@ gcloud sql instances patch demand-capacity \
 
 6. gcloud sql instances restart demand-capacity  #restart the database 
 
-7a. To push repository to Amway Enterprise, login to Enterprise Account.  Then in Github desktop, go to 
-Repositories, then select "Open in Command Prompt".  Then "git push enterprise main".  
+7. To push to personal github, login with personal github and use the UI to commit and push.
+   To push to Amway Enterprise... 
+      git remote add enterprise https://github.com/AmwayCommon/demand-capacity-streamlit-prototype.git
+      git push enterprise main
 
-7b. Do the same to push to personal by logging into personal github account, then "git push personal main
