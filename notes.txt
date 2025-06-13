@@ -25,4 +25,4 @@ gcloud sql instances patch demand-capacity \
 6. gcloud sql instances restart demand-capacity  #restart the database 
 
 7. To push repository from github desktop to my personal github, in github desktop go to Repositories, 
-then command prompt.  Then enter: git push personal main
+then command prompt.  Then need to enter: git push personal main
