@@ -24,5 +24,7 @@ gcloud sql instances patch demand-capacity \
 
 6. gcloud sql instances restart demand-capacity  #restart the database 
 
-7. To push repository from github desktop to my personal github, in github desktop go to Repositories, 
-then command prompt.  Then need to enter: git push personal main
+7a. To push repository to Amway Enterprise, login to Enterprise Account.  Then in Github desktop, go to 
+Repositories, then select "Open in Command Prompt".  Then "git push enterprise main".  
+
+7b. Do the same to push to personal by logging into personal github account, then "git push personal main
