@@ -11,19 +11,14 @@ def just_ask_report(conn):
     with st.expander("Click for description", expanded=False):
         st.markdown(
             """
-            The objective of 'Just Ask' is to enable a Q&A capability. This is experimental and 
-            the answer you get is very dependent on how you word your question.
-
-            For example, asking…
-            'Who is working on Product X?' returns no results.  
-            but rewording the question to…
-            'Which team members are assigned to Product X?' returns the team members
-            assigned to this product.  
+            The objective of 'Just Ask (rag)' is to enable a conversational Q&A capability.
+            This is experimental and the answer you get is very dependent on how you word your
+            question.    
             """)
-
+        
     user_question = st.text_input(
         "Ask a question:",
-        placeholder="e.g., Which team members are assigned to Product X?"
+        placeholder="e.g., Which team members have a business analyst skillset?"
     )
     if not user_question:
         return

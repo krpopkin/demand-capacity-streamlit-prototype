@@ -29,3 +29,5 @@ gcloud sql instances patch demand-capacity \
       git remote add enterprise https://github.com/AmwayCommon/demand-capacity-streamlit-prototype.git
       git push enterprise main
 
+8. To start my Qdrant database for RAG locally: Start Docker and run 
+"docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant" in the terminal
