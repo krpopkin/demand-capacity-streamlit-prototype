@@ -1,0 +1,11 @@
+# Ignore environment file with secrets
+.env
+
+# Python cache and build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environment folders
+venv/
+.env/        # if you used this as a venv folder name
