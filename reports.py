@@ -1,8 +1,8 @@
 import streamlit as st
 from report_demand import demand_report
 from report_capacity import capacity_report
-from report_just_ask import just_ask_report
-from report_just_ask_rag import just_ask_rag_report
+from report_just_ask_text_to_sql_tool import just_ask_text_to_sql_report
+from report_just_ask_rag_tool import just_ask_rag_report
 
 def show(engine):
     st.title("📒Reports")
@@ -15,19 +15,16 @@ def show(engine):
         st.warning("No database connection.")
         return
 
-    tab1, tab2, tab3, tab4 = st.tabs(["Demand", "Capacity", "Just ask", "Just Ask (RAG)"])
+    tab1, tab2, tab3 = st.tabs(["Demand", "Capacity", "Just ask"])
 
     with tab1:
         with engine.connect() as conn:
             demand_report(conn)
 
     with tab2:
-            with engine.connect() as conn:
-                capacity_report(conn)
+        with engine.connect() as conn:
+            capacity_report(conn)
                 
     with tab3:
-            with engine.connect() as conn:
-                just_ask_report(conn)
-                
-    with tab4:
-        just_ask_rag_report()
+        with engine.connect() as conn:
+            just_ask_choose_tool(conn)

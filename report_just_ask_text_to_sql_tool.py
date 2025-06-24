@@ -6,7 +6,7 @@ from db import get_engine
 import streamlit as st
 import make_answer_friendly
 
-def just_ask_report(conn):
+def just_ask_text_to_sql_report(conn):
     #Intro (collapsible)
     with st.expander("Click for description", expanded=False):
         st.markdown(

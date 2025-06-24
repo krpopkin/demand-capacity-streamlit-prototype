@@ -1,7 +1,0 @@
-streamlit
-pandas
-sqlalchemy
-psycopg2-binary
-streamlit-aggrid
-xlsxwriter
-openpyxl

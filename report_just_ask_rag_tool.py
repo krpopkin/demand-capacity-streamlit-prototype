@@ -7,14 +7,16 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import PointStruct
 from typing import List
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
 PROJECT_ID = os.getenv("PROJECT_ID")
 LOCATION = os.getenv("LOCATION")
 MODEL = os.getenv("MODEL")
-COLLECTIONS = os.getenv("COLLECTIONS")
-TOP_K_PER_COLLECTION = os.getenv("TOP_K_PER_COLLECTION")
+
+COLLECTIONS=["assignments","products","roles","skills_matrix","teammembers","team_insights"]
+TOP_K_PER_COLLECTION = 10
 
 client = aiplatform_v1.PredictionServiceClient()
 
