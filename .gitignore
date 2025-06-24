@@ -7,5 +7,4 @@ __pycache__/
 *.egg-info/
 
 # Virtual environment folders
-venv/
-.env/        # if you used this as a venv folder name
+.venv/
