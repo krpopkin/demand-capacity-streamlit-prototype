@@ -25,7 +25,7 @@ gcloud sql instances patch demand-capacity \
 6. gcloud sql instances restart demand-capacity  #restart the database 
 
 7. To push to personal github, login with personal github and use the UI to commit and push.
-   To push to Enterprise... 
+   To push to Enterprise, in the top nav select "Repository", then "Open Command Prompt"... 
       git remote add enterprise https://github.com/AmwayCommon/demand-capacity-streamlit-prototype.git
       git push enterprise main
 

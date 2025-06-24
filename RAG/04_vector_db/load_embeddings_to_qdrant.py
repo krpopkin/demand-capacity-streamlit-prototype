@@ -3,13 +3,16 @@ import os
 import pandas as pd
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import PointStruct, VectorParams, Distance
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # CONFIGURATION
 # Add parent directory to Python path so that this script can find db.py
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..','..')))
 
-DATA_DIR = "RAG/03_embeddings"
-USE_CLOUD = False  # Set to True when deploying to Cloud Run
+DATA_DIR = os.getenv("DATA_DIR")
+USE_CLOUD = os.getenv("USE_CLOUD")
 
 # --- Cloud / Local Qdrant Setup ---
 if USE_CLOUD:

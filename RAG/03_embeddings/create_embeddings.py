@@ -3,13 +3,16 @@ import json
 import pandas as pd
 from google.cloud import aiplatform_v1
 from google.protobuf.struct_pb2 import Struct
+from dotenv import load_dotenv 
+
+load_dotenv()
 
 # === CONFIG ===
-PROJECT_ID = "amw-dna-coe-working-ds-dev"
-LOCATION = "us-central1"
-MODEL = "publishers/google/models/gemini-embedding-001"
-INPUT_DIR = "RAG/02_exported_postgres_data"
-OUTPUT_DIR = "RAG/03_embeddings"
+PROJECT_ID = os.getenv("PROJECT_ID")
+LOCATION = os.getenv("LOCATION")
+MODEL = os.getenv("MODEL")
+INPUT_DIR = os.getenv("INPUT_DIR")
+OUTPUT_DIR = os.getenv("OUTPUT_DIR")
 
 client = aiplatform_v1.PredictionServiceClient()
 

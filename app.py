@@ -2,7 +2,6 @@ import streamlit as st
 import demand
 import reports
 import capacity
-import history_log
 from db import get_engine
 
 st.set_page_config(page_title="Demand Capacity App", layout="wide")

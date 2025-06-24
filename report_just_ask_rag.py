@@ -6,12 +6,15 @@ from google.protobuf.struct_pb2 import Struct
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import PointStruct
 from typing import List
+from dotenv import load_dotenv
 
-PROJECT_ID = "amw-dna-coe-working-ds-dev"
-LOCATION = "us-central1"
-MODEL = "publishers/google/models/gemini-embedding-001"
-COLLECTIONS = ["assignments", "products", "roles", "skills_matrix", "teammembers", "team_insights"]  # Or dynamically load with /collections
-TOP_K_PER_COLLECTION = 10
+load_dotenv()
+
+PROJECT_ID = os.getenv("PROJECT_ID")
+LOCATION = os.getenv("LOCATION")
+MODEL = os.getenv("MODEL")
+COLLECTIONS = os.getenv("COLLECTIONS")
+TOP_K_PER_COLLECTION = os.getenv("TOP_K_PER_COLLECTION")
 
 client = aiplatform_v1.PredictionServiceClient()
 
