@@ -6,23 +6,7 @@ from db import get_engine
 import streamlit as st
 import make_answer_friendly
 
-def just_ask_text_to_sql_report(conn):
-    #Intro (collapsible)
-    with st.expander("Click for description", expanded=False):
-        st.markdown(
-            """
-            The objective of 'Just Ask (rag)' is to enable a conversational Q&A capability.
-            This is experimental and the answer you get is very dependent on how you word your
-            question.    
-            """)
-        
-    user_question = st.text_input(
-        "Ask a question:",
-        placeholder="e.g., Which team members have a business analyst skillset?"
-    )
-    if not user_question:
-        return
-
+def just_ask_text_to_sql_report(conn, user_question):
     with st.spinner("Thinking…"):
         try:
             # 1) Instantiate Gemini 1.5 Pro via ADC
@@ -68,9 +52,8 @@ Write a single SQL statement using {dialect} syntax and return only the SQL text
             # 5) Execute that plain SQL against the database
             result = db.run(raw_sql)
             friendly_result = make_answer_friendly.format_result(user_question, result, llm)
-            #st.success("Answer:")
-            st.write(friendly_result)
-
+            return friendly_result
+            
         except Exception as e:
             st.error("❌ An error occurred while answering your question.")
             st.exception(e)

@@ -15,7 +15,7 @@ DATA_DIR = os.getenv("DATA_DIR")
 USE_CLOUD = os.getenv("USE_CLOUD")
 
 # --- Cloud / Local Qdrant Setup ---
-if USE_CLOUD:
+if USE_CLOUD == "False":
     QDRANT_URL = os.getenv("QDRANT_CLOUD_URL")  # e.g. "https://qdrant-yourid.a.run.app"
     QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
     client = QdrantClient(

@@ -31,3 +31,5 @@ gcloud sql instances patch demand-capacity \
 
 8. To start my Qdrant database for RAG locally: Start Docker and run 
 "docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant" in the terminal
+
+9. To check if collections loaded: curl http://localhost:6333/collections

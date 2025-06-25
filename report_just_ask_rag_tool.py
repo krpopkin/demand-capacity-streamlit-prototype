@@ -14,6 +14,9 @@ load_dotenv()
 PROJECT_ID = os.getenv("PROJECT_ID")
 LOCATION = os.getenv("LOCATION")
 MODEL = os.getenv("MODEL")
+USE_CLOUD = os.getenv("USE_CLOUD")
+QDRANT_CLOUD_URL= os.getenv("QDRANT_CLOUD_URL")   # only used when USE_CLOUD=True
+QDRANT_API_KEY= os.getenv("QDRANT_API_KEY")     # only used when USE_CLOUD=True
 
 COLLECTIONS=["assignments","products","roles","skills_matrix","teammembers","team_insights"]
 TOP_K_PER_COLLECTION = 10
@@ -47,47 +50,14 @@ def search_collection(qdrant: QdrantClient, collection: str, query_vector: List[
         return []
 
 
-def just_ask_rag_report(use_cloud: bool = False):
-    with st.expander("Click for description", expanded=False):
-        st.markdown(
-            """
-            The objective of 'Just Ask' is to enable a Q&A conversation.  This is experimental and 
-            the answer you get is very dependent on how you word your question.
-
-            For example, asking a multi-faceted question such as, 
-            "Tell me which team members have business analyst as a skillset, the available allocation
-            for each team member and who their manager is?"
-            is highly likely to return an incomplete and/or inaccurate result.  
-            
-            Asking for the same information via single questions and a conversational chat,
-            for example:
-            
-            Human: Which team members have business analysts as a skillset?
-            AI: responds
-            
-            Human: What is the total allocation of each business analyst?
-            AI responds
-            
-            Human: For business analysts with <100 percent allocation, who is there manager? 
-            AI responds
-            
-            You now now who is available and who to reach out to, to request a BA for your project. 
-            """)
-
-    user_question = st.text_input(
-        "Ask a question to start a conversation:",
-        placeholder="e.g., Which team members are assigned to Product X?"
-    )
-    if not user_question:
-        return
-
+def just_ask_rag_report(user_question):
     # Step 1: Embed the query
     query_vector = embed(user_question)
 
     # Step 2: Connect to Qdrant
     qdrant = QdrantClient(
-        url="https://your-cloud-run-url" if use_cloud else "http://localhost:6333",
-        api_key=os.getenv("QDRANT_API_KEY") if use_cloud else None
+        url="https://your-cloud-run-url" if USE_CLOUD == "True" else "http://localhost:6333",
+        api_key=os.getenv("QDRANT_API_KEY") if USE_CLOUD == "True" else None
     )
 
     # Step 3: Run searches in parallel using ThreadPool
@@ -109,6 +79,5 @@ def just_ask_rag_report(use_cloud: bool = False):
         print(f"\n#{i} - Score: {hit.score}")
         print(hit.payload.get("text", "⚠️ No 'text' field"))
 
-    # return [hit.payload.get("text", "") for hit in all_hits]
     response = [hit.payload.get("text", "") for hit in all_hits]
-    st.write(response)
+    return response

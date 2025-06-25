@@ -1,8 +1,7 @@
 import streamlit as st
 from report_demand import demand_report
 from report_capacity import capacity_report
-from report_just_ask_text_to_sql_tool import just_ask_text_to_sql_report
-from report_just_ask_rag_tool import just_ask_rag_report
+from report_just_ask_choose_tool import just_ask_choose_tool_report
 
 def show(engine):
     st.title("📒Reports")
@@ -27,4 +26,4 @@ def show(engine):
                 
     with tab3:
         with engine.connect() as conn:
-            just_ask_choose_tool(conn)
+            just_ask_choose_tool_report(conn)
