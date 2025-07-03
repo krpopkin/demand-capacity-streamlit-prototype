@@ -1,0 +1,74 @@
+{
+  "description": null,
+  "columns": {
+    "id": {
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "112",
+        "113",
+        "114"
+      ]
+    },
+    "created_at": {
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "2025-05-13 18:46:48.465843",
+        "2025-05-16 05:06:20.951954",
+        "2025-05-13 18:46:48.739789"
+      ]
+    },
+    "name": {
+      "data_type": "text",
+      "is_nullable": "YES",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "MealPlate",
+        "API Self-Service (Developer Apps / API Keys / Proxies)",
+        "API Management "
+      ]
+    },
+    "manager": {
+      "data_type": "text",
+      "is_nullable": "YES",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "Karthik Ramasamy",
+        "Sayan Chakraborty",
+        "Srikanth Prathipati "
+      ]
+    },
+    "technology_executive": {
+      "data_type": "text",
+      "is_nullable": "YES",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "Guarav Vijaywargia",
+        "",
+        "Jerry Cunningham"
+      ]
+    },
+    "is_active": {
+      "data_type": "boolean",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "False",
+        "True"
+      ]
+    }
+  },
+  "primary_keys": [
+    "id"
+  ],
+  "foreign_keys": []
+}

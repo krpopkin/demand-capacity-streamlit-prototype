@@ -15,7 +15,8 @@ langchain-experimental
 
 # Google Vertex AI / Gemini integration
 langchain-google-vertexai==2.0.24
-google-cloud-aiplatform>=1.38.0
+#google-cloud-aiplatform>=1.38.0
+google-cloud-aiplatform
 vertexai 
 pyarrow
 qdrant-client

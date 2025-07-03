@@ -1,59 +1,104 @@
-from langchain.prompts import PromptTemplate
-from langchain_google_vertexai import ChatVertexAI
-from langchain_community.utilities.sql_database import SQLDatabase
-from langchain_experimental.sql import SQLDatabaseChain
-from db import get_engine
-import streamlit as st
-import make_answer_friendly
+# report_just_ask_text_to_sql_tool.py
 
-def just_ask_text_to_sql_report(conn, user_question):
+import os
+import json
+import streamlit as st
+from dotenv import load_dotenv
+
+# Google Gen AI SDK
+from google import genai
+from google.genai.types import GenerateContentConfig
+
+# DB runner
+from langchain_community.utilities.sql_database import SQLDatabase
+from db import get_engine
+
+# ─── Load & validate .env ─────────────────────────────────────
+load_dotenv()
+SCHEMA_PATH = "text_to_sql/text_to_sql_schema_definition.json"
+MODEL_ID    = os.getenv("TEXT_TO_SQL_MODEL")
+PROJECT_ID  = os.getenv("PROJECT_ID")
+LOCATION    = os.getenv("LOCATION")
+
+if not PROJECT_ID or not LOCATION:
+    raise RuntimeError("PROJECT_ID and LOCATION must be set in your .env")
+
+# ─── Init Gen AI SDK for Vertex AI ───────────────────────────
+os.environ["GOOGLE_CLOUD_PROJECT"]      = PROJECT_ID
+os.environ["GOOGLE_CLOUD_LOCATION"]     = LOCATION
+os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "True"
+genai_client = genai.Client()
+
+class SimpleGenAI:
+    """Wrap google-genai to provide .invoke(prompt)->str"""
+    def __init__(self, client, model: str, temperature: float = 0.0):
+        self.client      = client
+        self.model       = model
+        self.temperature = temperature
+
+    def invoke(self, prompt: str) -> str:
+        cfg = GenerateContentConfig(temperature=self.temperature)
+        resp = self.client.models.generate_content(
+            model=self.model,
+            contents=prompt,
+            config=cfg,
+        )
+        return resp.text.strip()
+
+def load_schema_dict() -> dict:
+    with open(SCHEMA_PATH, "r") as f:
+        return json.load(f)
+
+def just_ask_text_to_sql_report(conn, user_question: str):
+    """
+    1) Embed JSON schema in the prompt
+    2) Ask Gemini SQL statement
+    3) Run it against Postgres
+    4) Ask Gemini to explain the results
+    Returns (raw_sql, friendly_answer) or (None, None) on error.
+    """
     with st.spinner("Thinking…"):
         try:
-            # 1) Instantiate Gemini 1.5 Pro via ADC
-            llm = ChatVertexAI(
-                model="gemini-1.5-pro-002",
-                temperature=0
-            )
+            # a) Load & dump schema JSON
+            schema = load_schema_dict()
+            schema_json = json.dumps(schema, indent=2)
 
-            # 2) Wrap your SQLAlchemy engine for LangChain
+            # b) Prepare DB & dialect
             engine = get_engine()
-            db = SQLDatabase(engine)
+            db     = SQLDatabase(engine)
+            dialect = db.dialect
 
-            # 3) Build a custom prompt that uses {table_info}
-            sql_prompt = PromptTemplate(
-                input_variables=["input", "table_info", "dialect"],
-                template="""
-You are an expert SQL generator. Given the database schema (as table_info) and a user question,
-output exactly one valid SQL query—no explanations, no Markdown fences.
-
-Here are the tables and their columns:
-{table_info}
-
-User question:
-{input}
-
-Write a single SQL statement using {dialect} syntax and return only the SQL text.
-"""
+            # c) Prompt to generate SQL
+            sql_prompt = (
+                "You are an expert SQL generator.\n"
+                "Below is the exact database schema in JSON:\n"
+                f"{schema_json}\n\n"
+                "User question:\n"
+                f"{user_question}\n\n"
+                f"Write exactly one valid SQL statement (no markdown fences) "
+                f"using {dialect} syntax to answer the question.\n"
             )
+            llm = SimpleGenAI(genai_client, MODEL_ID, temperature=0.0)
+            raw_sql = llm.invoke(sql_prompt)
 
-            chain = SQLDatabaseChain.from_llm(
-                llm=llm,
-                db=db,
-                prompt=sql_prompt,
-                verbose=False
+            # d) Execute the SQL
+            rows = db.run(raw_sql)  # list[dict]
+            rows_json = json.dumps(rows, default=str, indent=2)
+
+            # e) Prompt to explain results
+            explain_prompt = (
+                "The human asked: " + user_question + "\n\n"
+                "I ran this SQL:\n"
+                + raw_sql + "\n\n"
+                "and got these rows in JSON:\n"
+                + rows_json + "\n\n"
+                "Please write a concise, plain-English answer based only on those results."
             )
+            friendly_answer = llm.invoke(explain_prompt)
 
-            # 4) Run the chain; {table_info} and {dialect} will be auto‐filled for you
-            raw_sql = chain.run(user_question)
+            return raw_sql, friendly_answer
 
-            #st.success("Generated SQL:")
-            #st.code(raw_sql)
-
-            # 5) Execute that plain SQL against the database
-            result = db.run(raw_sql)
-            friendly_result = make_answer_friendly.format_result(user_question, result, llm)
-            return friendly_result
-            
         except Exception as e:
-            st.error("❌ An error occurred while answering your question.")
-            st.exception(e)
+            st.error("""❌ An error occurred while answering your question. Please
+                     try asking it a different way or make the question less complex""")
+            return None, None

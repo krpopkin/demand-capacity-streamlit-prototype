@@ -1,0 +1,488 @@
+{
+  "assignments": {
+    "description": null,
+    "columns": {
+      "id": {
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "54",
+          "55",
+          "56"
+        ]
+      },
+      "product_id": {
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "161",
+          "138",
+          "152"
+        ]
+      },
+      "role_id": {
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "53",
+          "63",
+          "61"
+        ]
+      },
+      "teammember_id": {
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "217",
+          "223",
+          "232"
+        ]
+      },
+      "allocation": {
+        "data_type": "numeric",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "0.015",
+          "0.34",
+          "3.0"
+        ]
+      },
+      "is_active": {
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "False",
+          "True"
+        ]
+      },
+      "created_at": {
+        "data_type": "timestamp without time zone",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "2025-06-10 08:31:56.080951",
+          "2025-05-16 05:41:50.128031",
+          "2025-06-16 06:40:59.500464"
+        ]
+      }
+    },
+    "primary_keys": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "product_id",
+        "references_table": "products",
+        "references_column": "id"
+      },
+      {
+        "column": "role_id",
+        "references_table": "roles",
+        "references_column": "id"
+      },
+      {
+        "column": "teammember_id",
+        "references_table": "teammembers",
+        "references_column": "id"
+      }
+    ]
+  },
+  "history_log": {
+    "description": null,
+    "columns": {
+      "id": {
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "2713",
+          "2714",
+          "2715"
+        ]
+      },
+      "timestamp": {
+        "data_type": "timestamp without time zone",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "2025-05-21 09:24:20.556227",
+          "2025-05-16 01:30:54.672215",
+          "2025-05-16 05:38:18.591146"
+        ]
+      },
+      "table_name": {
+        "data_type": "text",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "skills_matrix",
+          "teammembers",
+          "roles"
+        ]
+      },
+      "operation": {
+        "data_type": "text",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "INSERT",
+          "INACTIVATE",
+          "UPDATE"
+        ]
+      },
+      "record_id": {
+        "data_type": "integer",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "116",
+          "229",
+          "51"
+        ]
+      },
+      "changed_by": {
+        "data_type": "text",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": []
+      },
+      "old_data": {
+        "data_type": "jsonb",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "{'id': '137'}",
+          "{'id': '142'}",
+          "{'id': '143'}"
+        ]
+      },
+      "new_data": {
+        "data_type": "jsonb",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "{'id': '131.0', 'name': 'Tableau Server Upgrade', 'manager': 'Darrell', 'technology_executive': 'Gaurav Vijaywargia'}",
+          "{'id': '146.0', 'name': 'KeyBridge (CAS)', 'manager': 'Mike Heyn', 'technology_executive': 'Guarav Vijaywargia'}",
+          "{'id': '63', 'role': 'Data Scientist', 'allocation': '0.1', 'inactivate': 'False', 'team_member': 'San Mishra'}"
+        ]
+      }
+    },
+    "primary_keys": [
+      "id"
+    ],
+    "foreign_keys": []
+  },
+  "products": {
+    "description": null,
+    "columns": {
+      "id": {
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "112",
+          "113",
+          "114"
+        ]
+      },
+      "created_at": {
+        "data_type": "timestamp without time zone",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "2025-05-13 18:46:48.465843",
+          "2025-05-16 05:06:20.951954",
+          "2025-05-13 18:46:48.739789"
+        ]
+      },
+      "name": {
+        "data_type": "text",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "MealPlate",
+          "API Self-Service (Developer Apps / API Keys / Proxies)",
+          "API Management "
+        ]
+      },
+      "manager": {
+        "data_type": "text",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "Karthik Ramasamy",
+          "Sayan Chakraborty",
+          "Srikanth Prathipati "
+        ]
+      },
+      "technology_executive": {
+        "data_type": "text",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "Guarav Vijaywargia",
+          "",
+          "Jerry Cunningham"
+        ]
+      },
+      "is_active": {
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "False",
+          "True"
+        ]
+      }
+    },
+    "primary_keys": [
+      "id"
+    ],
+    "foreign_keys": []
+  },
+  "roles": {
+    "description": null,
+    "columns": {
+      "id": {
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "56",
+          "58",
+          "57"
+        ]
+      },
+      "created_at": {
+        "data_type": "timestamp without time zone",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "2025-05-13 18:58:48.608953",
+          "2025-05-13 18:58:48.238039",
+          "2025-05-13 18:58:48.329769"
+        ]
+      },
+      "name": {
+        "data_type": "text",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "AI/ML Engineer",
+          "Integration Engineer",
+          "Data Engineer"
+        ]
+      },
+      "description": {
+        "data_type": "text",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "Responsible for organizing the team through successful sprints.  Primarily an agile scrum master role.",
+          "NaN"
+        ]
+      },
+      "is_active": {
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "True"
+        ]
+      }
+    },
+    "primary_keys": [
+      "id"
+    ],
+    "foreign_keys": []
+  },
+  "skills_matrix": {
+    "description": null,
+    "columns": {
+      "id": {
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "110",
+          "111",
+          "112"
+        ]
+      },
+      "teammember_id": {
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "217",
+          "223",
+          "209"
+        ]
+      },
+      "role_id": {
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "56",
+          "58",
+          "57"
+        ]
+      },
+      "created_at": {
+        "data_type": "timestamp without time zone",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "2025-05-14 01:51:20.072430",
+          "2025-05-14 01:50:43.782868",
+          "2025-05-16 05:18:50.227347"
+        ]
+      },
+      "skill_level": {
+        "data_type": "text",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "expert",
+          "beginner",
+          "intermediate"
+        ]
+      },
+      "is_active": {
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "True"
+        ]
+      }
+    },
+    "primary_keys": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "role_id",
+        "references_table": "roles",
+        "references_column": "id"
+      },
+      {
+        "column": "teammember_id",
+        "references_table": "teammembers",
+        "references_column": "id"
+      }
+    ]
+  },
+  "teammembers": {
+    "description": null,
+    "columns": {
+      "id": {
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "204",
+          "205",
+          "206"
+        ]
+      },
+      "created_at": {
+        "data_type": "timestamp without time zone",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "2025-05-13 19:43:02.485249",
+          "2025-05-13 19:43:01.686850",
+          "2025-05-13 19:43:03.022787"
+        ]
+      },
+      "name": {
+        "data_type": "text",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "Yogendra Kumar",
+          "Abhishek Kumar",
+          "Imran Naqvi"
+        ]
+      },
+      "manager": {
+        "data_type": "text",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "Renuka Dubas",
+          "Manish Sannat",
+          "Cliff Seow"
+        ]
+      },
+      "level": {
+        "data_type": "text",
+        "is_nullable": "YES",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "GG19",
+          "GG13",
+          "GG18"
+        ]
+      },
+      "is_active": {
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "max_length": null,
+        "description": null,
+        "sample_values": [
+          "True"
+        ]
+      }
+    },
+    "primary_keys": [
+      "id"
+    ],
+    "foreign_keys": []
+  }
+}

@@ -12,8 +12,8 @@ load_dotenv()
 ###############################################################################################
 
 def llm_to_decide_tool():
-    #decision = 'text to sql'
-    decision = 'RAG'
+    decision = 'text to sql'
+    #decision = 'RAG'
     return decision
 
 def just_ask_choose_tool_report(conn):
@@ -52,8 +52,11 @@ def just_ask_choose_tool_report(conn):
     
     decision = llm_to_decide_tool()
     if decision == 'text to sql':
-        result = just_ask_text_to_sql_report(conn, user_question)
+        sql_query, result = just_ask_text_to_sql_report(conn, user_question)
+        with st.expander("Show sql query", expanded=False):
+            st.code(sql_query, language="sql")     
     else:
         result = just_ask_rag_report(user_question)  
-    
+        
     st.write(result)
+ 
