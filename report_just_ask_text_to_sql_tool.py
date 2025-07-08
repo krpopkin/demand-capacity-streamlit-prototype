@@ -13,6 +13,9 @@ from google.genai.types import GenerateContentConfig
 from langchain_community.utilities.sql_database import SQLDatabase
 from db import get_engine
 
+# if text to sql fails to create a query, then RAG will get used.  
+from report_just_ask_rag_tool import just_ask_rag_report
+
 # ─── Load & validate .env ─────────────────────────────────────
 load_dotenv()
 SCHEMA_PATH = "text_to_sql/text_to_sql_schema_definition.json"
@@ -99,6 +102,9 @@ def just_ask_text_to_sql_report(conn, user_question: str):
             return raw_sql, friendly_answer
 
         except Exception as e:
-            st.error("""❌ An error occurred while answering your question. Please
-                     try asking it a different way or make the question less complex""")
-            return None, None
+            st.text("""Could not get an answer using SQL.  Trying a different approach (RAG)""")
+            result = just_ask_rag_report(user_question)  
+            return None, result
+            # st.error("""❌ An error occurred while answering your question. Please
+            #          try asking it a different way or make the question less complex""")
+            # return None, None

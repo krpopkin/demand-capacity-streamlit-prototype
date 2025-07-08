@@ -14,25 +14,23 @@ from google.protobuf.struct_pb2 import Struct
 
 # Gen AI SDK
 from google import genai
-from google.genai.types import GenerateContentConfig, HttpOptions
+from google.genai.types import GenerateContentConfig
 
 # Qdrant
 from qdrant_client import QdrantClient
 
 # ─── 1) Load & normalize your .env ────────────────────────────
 load_dotenv()
-PROJECT_ID       = os.getenv("PROJECT_ID", "").strip()
-LOCATION         = os.getenv("LOCATION",   "").strip()
-USE_CLOUD        = os.getenv("USE_CLOUD",     "False") == "True"
-QDRANT_CLOUD_URL = os.getenv("QDRANT_CLOUD_URL", "").strip()
-QDRANT_API_KEY   = os.getenv("QDRANT_API_KEY",   "").strip()
-EMBEDDINGS_MODEL = os.getenv("EMBEDDINGS_MODEL", "").strip()
-RAW_MODEL        = os.getenv("SYNTHESIS_MODEL",  "gemini-2.5-pro").strip()
+PROJECT_ID       = os.getenv("PROJECT_ID")
+LOCATION         = os.getenv("LOCATION")
+USE_CLOUD        = os.getenv("USE_CLOUD")
+QDRANT_CLOUD_URL = os.getenv("QDRANT_CLOUD_URL")
+QDRANT_API_KEY   = os.getenv("QDRANT_API_KEY")
+EMBEDDINGS_MODEL = os.getenv("EMBEDDINGS_MODEL")
+SYNTHESIS_MODEL  = os.getenv("SYNTHESIS_MODEL")
 
 if not PROJECT_ID or not LOCATION:
     raise RuntimeError("PROJECT_ID and LOCATION must be set in your .env")
-
-MODEL_ID = RAW_MODEL
 
 # ─── 2) Configure GenAI for Vertex & instantiate client ───────
 os.environ["GOOGLE_CLOUD_PROJECT"]      = PROJECT_ID
@@ -71,7 +69,7 @@ def build_synthesis_prompt(question: str, contexts: List[str]) -> str:
     numbered = "\n".join(f"{i+1}. {c}" for i, c in enumerate(contexts))
     return textwrap.dedent(f"""
     You are an expert AI assistant. Use the numbered contexts to answer concisely,
-    integrating them into a coherent answer and citing “[Context X]” inline.
+    integrating them into a coherent answer.
 
     **User Question:**
     {question}
@@ -103,7 +101,7 @@ def just_ask_rag_report(user_question: str) -> str:
     """
     1) Embed the question
     2) Retrieve from Qdrant in parallel
-    3) One Gemini 2.5 Pro call with normalized MODEL_ID
+    3) Call the model
     4) Return the answer text
     """
     # A) Embed
@@ -126,5 +124,5 @@ def just_ask_rag_report(user_question: str) -> str:
 
     # D) Generate answer
     prompt = build_synthesis_prompt(user_question, contexts)
-    llm    = SimpleGenAI(genai_client, MODEL_ID, temperature=0.0)
+    llm    = SimpleGenAI(genai_client, SYNTHESIS_MODEL, temperature=0.0)
     return llm.invoke(prompt)

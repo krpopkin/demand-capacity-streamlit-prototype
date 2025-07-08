@@ -33,3 +33,11 @@ gcloud sql instances patch demand-capacity \
 "docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant" in the terminal
 
 9. To check if collections loaded: curl http://localhost:6333/collections
+
+10. Qdrant info: 
+my account on qdrant: https://cloud.qdrant.io/accounts/1506df7a-8855-445c-937a-83c630ae7171/clusters/4979aca5-fea9-4f39-8d18-f323cc41c737/overview
+
+qdrant_client = QdrantClient(
+    url="https://4979aca5-fea9-4f39-8d18-f323cc41c737.us-east4-0.gcp.cloud.qdrant.io:6333", 
+    api_key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.iTnnxWZfsObqPbxW4NrOu8Ekb2QQRzTy_VDTsgkO574",
+)

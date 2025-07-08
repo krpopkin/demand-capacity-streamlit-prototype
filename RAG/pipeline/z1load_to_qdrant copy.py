@@ -14,25 +14,42 @@ load_dotenv()
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..','..')))
 
 DATA_DIR = os.getenv("DATA_DIR")
+use_cloud = os.getenv("USE_QDRANT_CLOUD", "False").strip().lower() == "true"
 
-def connect_to_qdrant():
-    use_cloud = os.getenv("USE_QDRANT_CLOUD", "False").strip().lower() == "true"
+if use_cloud:
+    raw_url = os.getenv("QDRANT_URL", "").strip()
+    if not raw_url:
+        raise RuntimeError("QDRANT_URL must be set when USE_QDRANT_CLOUD=True")
 
-    if use_cloud:
-        url = os.getenv("QDRANT_URL", "").strip()
-        api_key=os.getenv("QDRANT_KEY").strip()
-        
-        client = QdrantClient(
-            url=url,
-            api_key=api_key,
-            prefer_grpc=True)
-    else:
-        client = QdrantClient(host="localhost", port=6333)
+    # ensure urlparse has a scheme
+    url = raw_url if raw_url.startswith(("http://", "https://")) else "https://" + raw_url
+    parsed = urlparse(url)
+
+    host = parsed.hostname
+    port = parsed.port or (443 if parsed.scheme == "https" else 80)
+    https_flag = (parsed.scheme == "https")
+
+    # ─── DEBUG: verify DNS resolution before we even call QdrantClient ───
+    try:
+        addrs = socket.getaddrinfo(host, None)
+        print(f"✅ DNS OK for {host}: {[addr[4][0] for addr in addrs]}")
+    except Exception as e:
+        raise RuntimeError(f"DNS lookup failed for Qdrant host {host!r}: {e}") from e
+
+    print(f"→ Connecting to Qdrant Cloud at {host}:{port} (HTTPS={https_flag})")
+    client = QdrantClient(
+        host=host,
+        port=port,
+        https=https_flag,
+        prefer_grpc=True,
+        api_key=os.getenv("QDRANT_KEY").strip(),
+    )
+else:
+    print("→ Connecting to local Qdrant on localhost:6333")
+    client = QdrantClient(host="localhost", port=6333)
     
-    return client
     
-    
-def load_embeddings(filepath, collection_name, client):
+def load_embeddings(filepath, collection_name):
     df = pd.read_parquet(filepath)
 
     # compute vector size even if df is empty
@@ -66,13 +83,11 @@ def load_embeddings(filepath, collection_name, client):
 
 def main():
     # --- Load and upload each parquet file ---
-    client = connect_to_qdrant()
-    
     for filename in os.listdir(DATA_DIR):
         if filename.endswith(".parquet"):
             filepath = os.path.join(DATA_DIR, filename)
             collection_name = filename.replace(".parquet", "")
-            load_embeddings(filepath, collection_name, client)
+            load_embeddings(filepath, collection_name)
 
 if __name__ == "__main__":
     main()

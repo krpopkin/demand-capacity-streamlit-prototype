@@ -3,6 +3,8 @@ import streamlit as st
 from report_just_ask_text_to_sql_tool import just_ask_text_to_sql_report
 from report_just_ask_rag_tool import just_ask_rag_report
 from dotenv import load_dotenv
+from google import genai
+from google.genai.types import GenerateContentConfig
 
 load_dotenv()
 
@@ -11,11 +13,47 @@ load_dotenv()
 # entry to decide between calling the text-to-sql or RAG tool. 
 ###############################################################################################
 
-def llm_to_decide_tool():
-    #decision = 'text to sql'
-    decision = 'RAG'
-    return decision
-    
+DECISION_MODEL = os.getenv("DECISION_MODEL")
+
+genai_client = genai.Client(vertexai=True)
+
+# ─── 6) GenAI thin wrapper ────────────────────────────────────
+class SimpleGenAI:
+    def __init__(self, client, model: str, temperature: float = 0.0):
+        self.client      = client
+        self.model       = model
+        self.temperature = temperature
+
+    def invoke(self, prompt: str) -> str:
+        cfg = GenerateContentConfig(temperature=self.temperature)
+        resp = self.client.models.generate_content(
+            model=self.model,    # <-- now ALWAYS a valid 'google/...'
+            contents=prompt,
+            config=cfg,
+        )
+        return resp.text.strip()
+
+def decision_prompt(user_question: str) -> str:
+    prompt = f"""
+        You are a decision router for a Q&A system. You must choose exactly one of:
+        • text to sql  
+        • RAG
+
+        - If the question is short and only requires one or two tables to get an answer, use 
+        text to sql.
+        
+        - If the question is longer, or uses connector words like "and" that make the query
+        hard to construct, then use RAG.    
+
+        Respond with **only** the decision keyword, in lowercase, with no extra commentary.
+
+        User question:
+        \"\"\"{user_question}\"\"\"
+
+        Decision:
+        """
+    return prompt 
+
 def just_ask_choose_tool_report(conn):
     with st.expander("Click for description", expanded=False):
         st.markdown(
@@ -50,7 +88,10 @@ def just_ask_choose_tool_report(conn):
     if not user_question:
         return
     
-    decision = llm_to_decide_tool()
+    prompt = decision_prompt(user_question)
+    llm = SimpleGenAI(genai_client, DECISION_MODEL, temperature=0.0)
+    decision = llm.invoke(prompt).strip().lower()
+    
     if decision == 'text to sql':
         sql_query, result = just_ask_text_to_sql_report(conn, user_question)
         with st.expander("Show sql query", expanded=False):
