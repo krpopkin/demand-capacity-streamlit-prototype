@@ -12,8 +12,8 @@ load_dotenv()
 ###############################################################################################
 
 def llm_to_decide_tool():
-    #decision = 'text to sql'
-    decision = 'RAG'
+    decision = 'text to sql'
+    #decision = 'RAG'
     return decision
     
 def just_ask_choose_tool_report(conn):

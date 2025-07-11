@@ -25,8 +25,8 @@ PROJECT_ID       = os.getenv("PROJECT_ID")
 LOCATION         = os.getenv("LOCATION")
 # Parse USE_CLOUD as a real boolean (True => use cloud, False => use local)
 USE_CLOUD        = os.getenv("USE_CLOUD", "False").lower() in ("true", "1")
-QDRANT_CLOUD_URL = os.getenv("QDRANT_CLOUD_URL")
-QDRANT_API_KEY   = os.getenv("QDRANT_API_KEY")
+QDRANT_URL = os.getenv("QDRANT_URL")
+QDRANT_KEY   = os.getenv("QDRANT_KEY")
 EMBEDDINGS_MODEL = os.getenv("EMBEDDINGS_MODEL")
 SYNTHESIS_MODEL  = os.getenv("SYNTHESIS_MODEL")
 
@@ -114,8 +114,8 @@ def just_ask_rag_report(user_question: str) -> str:
     # B) Qdrant client instantiation based on USE_CLOUD
     if USE_CLOUD:
         qdrant = QdrantClient(
-            url=QDRANT_CLOUD_URL,
-            api_key=QDRANT_API_KEY,
+            url=QDRANT_URL,
+            api_key=QDRANT_KEY,
         )
     else:
         qdrant = QdrantClient(host="localhost", port=6333)
