@@ -18,9 +18,9 @@
       "max_length": null,
       "description": null,
       "sample_values": [
+        "179",
         "161",
-        "138",
-        "152"
+        "138"
       ]
     },
     "role_id": {

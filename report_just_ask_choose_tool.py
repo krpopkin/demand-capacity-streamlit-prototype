@@ -11,52 +11,37 @@ load_dotenv()
 # entry to decide between calling the text-to-sql or RAG tool. 
 ###############################################################################################
 
-def llm_to_decide_tool():
-    decision = 'text to sql'
-    #decision = 'RAG'
-    return decision
-    
+def llm_to_decide_tool(model_choice):
+    return model_choice.lower()  # returns 'text to sql' or 'rag'
+
 def just_ask_choose_tool_report(conn):
     with st.expander("Click for description", expanded=False):
         st.markdown(
             """
-            The objective of 'Just Ask' is to enable a Q&A conversation.  This is experimental and 
+            The objective of 'Just Ask' is to enable a Q&A conversation. This is experimental and 
             the answer you get is very dependent on how you word your question.
+            """
+        )
 
-            For example, asking a multi-faceted question such as, 
-            "Tell me which team members have business analyst as a skillset, the available allocation
-            for each team member and who their manager is?"
-            is highly likely to return an incomplete and/or inaccurate result.  
-            
-            Asking for the same information via single questions and a conversational chat,
-            for example:
-            
-            Human: Which team members have business analysts as a skillset?
-            AI: responds
-            
-            Human: What is the total allocation of each business analyst?
-            AI responds
-            
-            Human: For business analysts with <100 percent allocation, who is there manager? 
-            AI responds
-            
-            You now now who is available and who to reach out to, to request a BA for your project. 
-            """)
+    col1, col2 = st.columns([6, 2])
+    with col1:
+        user_question = st.text_input(
+            "Ask a question to start a conversation:",
+            placeholder="e.g., Which team members are assigned to Product X?")
+    with col2:
+        model_choice = st.selectbox("Model", options=["Text to SQL", "RAG"])
+        
 
-    user_question = st.text_input(
-        "Ask a question to start a conversation:",
-        placeholder="e.g., Which team members are assigned to Product X?"
-    )
     if not user_question:
         return
-    
-    decision = llm_to_decide_tool()
+
+    decision = llm_to_decide_tool(model_choice)
+
     if decision == 'text to sql':
         sql_query, result = just_ask_text_to_sql_report(conn, user_question)
-        with st.expander("Show sql query", expanded=False):
-            st.code(sql_query, language="sql")     
+        with st.expander("Show SQL query", expanded=False):
+            st.code(sql_query, language="sql")
     else:
-        result = just_ask_rag_report(user_question)  
-        
+        result = just_ask_rag_report(user_question)
+
     st.write(result)
- 

@@ -23,8 +23,8 @@ from qdrant_client import QdrantClient
 load_dotenv()
 PROJECT_ID       = os.getenv("PROJECT_ID")
 LOCATION         = os.getenv("LOCATION")
-# Parse USE_CLOUD as a real boolean (True => use cloud, False => use local)
-USE_CLOUD        = os.getenv("USE_CLOUD", "False").lower() in ("true", "1")
+# Parse USE_QDRANT_CLOUD as a real boolean (True => use cloud, False => use local)
+USE_QDRANT_CLOUD = os.getenv("USE_QDRANT_CLOUD", "False").lower() in ("true", "1")
 QDRANT_URL = os.getenv("QDRANT_URL")
 QDRANT_KEY   = os.getenv("QDRANT_KEY")
 EMBEDDINGS_MODEL = os.getenv("EMBEDDINGS_MODEL")
@@ -111,8 +111,8 @@ def just_ask_rag_report(user_question: str) -> str:
     # A) Embed
     query_vec = embed(user_question)
 
-    # B) Qdrant client instantiation based on USE_CLOUD
-    if USE_CLOUD:
+    # B) Qdrant client instantiation based on USE_QDRANT_CLOUD
+    if USE_QDRANT_CLOUD:
         qdrant = QdrantClient(
             url=QDRANT_URL,
             api_key=QDRANT_KEY,

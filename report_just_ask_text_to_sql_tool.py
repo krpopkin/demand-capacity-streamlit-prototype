@@ -102,9 +102,6 @@ def just_ask_text_to_sql_report(conn, user_question: str):
             return raw_sql, friendly_answer
 
         except Exception as e:
-            st.text("""Could not get an answer using SQL.  Trying a different approach (RAG)""")
-            result = just_ask_rag_report(user_question)  
-            return None, result
-            # st.error("""❌ An error occurred while answering your question. Please
-            #          try asking it a different way or make the question less complex""")
-            # return None, None
+            st.error("""❌ An error occurred while answering your question. Please
+                     try asking it a different way or make the question less complex""")
+            return None, None
