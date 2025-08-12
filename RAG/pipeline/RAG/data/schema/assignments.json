@@ -1,0 +1,101 @@
+{
+  "description": null,
+  "columns": {
+    "id": {
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "54",
+        "55",
+        "56"
+      ]
+    },
+    "product_id": {
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "179",
+        "161",
+        "138"
+      ]
+    },
+    "role_id": {
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "53",
+        "63",
+        "61"
+      ]
+    },
+    "teammember_id": {
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "217",
+        "223",
+        "232"
+      ]
+    },
+    "allocation": {
+      "data_type": "numeric",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "0.015",
+        "0.34",
+        "3.0"
+      ]
+    },
+    "is_active": {
+      "data_type": "boolean",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "False",
+        "True"
+      ]
+    },
+    "created_at": {
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "2025-06-10 08:31:56.080951",
+        "2025-05-16 05:41:50.128031",
+        "2025-06-16 06:40:59.500464"
+      ]
+    }
+  },
+  "primary_keys": [
+    "id"
+  ],
+  "foreign_keys": [
+    {
+      "column": "product_id",
+      "references_table": "products",
+      "references_column": "id"
+    },
+    {
+      "column": "role_id",
+      "references_table": "roles",
+      "references_column": "id"
+    },
+    {
+      "column": "teammember_id",
+      "references_table": "teammembers",
+      "references_column": "id"
+    }
+  ]
+}

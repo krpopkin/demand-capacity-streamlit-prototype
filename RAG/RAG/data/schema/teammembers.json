@@ -1,0 +1,73 @@
+{
+  "description": null,
+  "columns": {
+    "id": {
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "204",
+        "205",
+        "206"
+      ]
+    },
+    "created_at": {
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "2025-05-13 19:43:02.485249",
+        "2025-05-13 19:43:01.686850",
+        "2025-05-13 19:43:03.022787"
+      ]
+    },
+    "name": {
+      "data_type": "text",
+      "is_nullable": "YES",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "Yogendra Kumar",
+        "Abhishek Kumar",
+        "Imran Naqvi"
+      ]
+    },
+    "manager": {
+      "data_type": "text",
+      "is_nullable": "YES",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "Renuka Dubas",
+        "Manish Sannat",
+        "Cliff Seow"
+      ]
+    },
+    "level": {
+      "data_type": "text",
+      "is_nullable": "YES",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "GG19",
+        "GG13",
+        "GG18"
+      ]
+    },
+    "is_active": {
+      "data_type": "boolean",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "True"
+      ]
+    }
+  },
+  "primary_keys": [
+    "id"
+  ],
+  "foreign_keys": []
+}

@@ -1,0 +1,84 @@
+{
+  "description": null,
+  "columns": {
+    "id": {
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "110",
+        "111",
+        "112"
+      ]
+    },
+    "teammember_id": {
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "217",
+        "223",
+        "209"
+      ]
+    },
+    "role_id": {
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "56",
+        "58",
+        "57"
+      ]
+    },
+    "created_at": {
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "2025-05-14 01:51:20.072430",
+        "2025-05-14 01:50:43.782868",
+        "2025-05-16 05:18:50.227347"
+      ]
+    },
+    "skill_level": {
+      "data_type": "text",
+      "is_nullable": "YES",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "expert",
+        "beginner",
+        "intermediate"
+      ]
+    },
+    "is_active": {
+      "data_type": "boolean",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "True"
+      ]
+    }
+  },
+  "primary_keys": [
+    "id"
+  ],
+  "foreign_keys": [
+    {
+      "column": "role_id",
+      "references_table": "roles",
+      "references_column": "id"
+    },
+    {
+      "column": "teammember_id",
+      "references_table": "teammembers",
+      "references_column": "id"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "description": null,
+  "columns": {
+    "id": {
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "56",
+        "58",
+        "57"
+      ]
+    },
+    "created_at": {
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "2025-05-13 18:58:48.608953",
+        "2025-05-13 18:58:48.238039",
+        "2025-05-13 18:58:48.329769"
+      ]
+    },
+    "name": {
+      "data_type": "text",
+      "is_nullable": "YES",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "AI/ML Engineer",
+        "Integration Engineer",
+        "Data Engineer"
+      ]
+    },
+    "description": {
+      "data_type": "text",
+      "is_nullable": "YES",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "Responsible for organizing the team through successful sprints.  Primarily an agile scrum master role.",
+        "NaN"
+      ]
+    },
+    "is_active": {
+      "data_type": "boolean",
+      "is_nullable": "NO",
+      "max_length": null,
+      "description": null,
+      "sample_values": [
+        "True"
+      ]
+    }
+  },
+  "primary_keys": [
+    "id"
+  ],
+  "foreign_keys": []
+}
